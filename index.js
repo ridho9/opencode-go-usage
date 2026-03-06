@@ -14,16 +14,47 @@ function getConfigPaths() {
 }
 
 function loadConfig() {
+  // Security: Prefer environment variables over config file
+  const envWorkspaceId = process.env.OPENCODE_GO_WORKSPACE_ID;
+  const envAuthCookie = process.env.OPENCODE_GO_AUTH_COOKIE;
+  
+  if (envWorkspaceId && envAuthCookie) {
+    return {
+      workspaceId: envWorkspaceId,
+      authCookie: envAuthCookie,
+      refreshIntervalMinutes: parseInt(process.env.OPENCODE_GO_REFRESH_MINUTES) || 5,
+      showAtSessionStart: process.env.OPENCODE_GO_SHOW_AT_START !== 'false',
+    };
+  }
+  
+  // Fallback to config file with security warning
   const configPaths = getConfigPaths();
   
   for (const configPath of configPaths) {
     if (fs.existsSync(configPath)) {
       try {
+        // Security: Check file permissions
+        const stats = fs.statSync(configPath);
+        const mode = stats.mode & parseInt('777', 8);
+        const isWorldReadable = mode & parseInt('044', 8);
+        
+        if (isWorldReadable) {
+          console.warn(`⚠️  Security Warning: ${configPath} is world-readable.`);
+          console.warn('   Run: chmod 600 ' + configPath);
+          console.warn('   Consider using environment variables instead.');
+        }
+        
         const content = fs.readFileSync(configPath, 'utf8');
         const fileConfig = JSON.parse(content);
+        
+        console.warn('⚠️  Security: Using config file for credentials.');
+        console.warn('   Consider using environment variables for better security:');
+        console.warn('   export OPENCODE_GO_WORKSPACE_ID="your-workspace-id"');
+        console.warn('   export OPENCODE_GO_AUTH_COOKIE="your-auth-cookie"');
+        
         return {
-          workspaceId: process.env.OPENCODE_GO_WORKSPACE_ID || fileConfig.workspaceId,
-          authCookie: process.env.OPENCODE_GO_AUTH_COOKIE || fileConfig.authCookie,
+          workspaceId: fileConfig.workspaceId,
+          authCookie: fileConfig.authCookie,
           refreshIntervalMinutes: fileConfig.refreshIntervalMinutes ?? 5,
           showAtSessionStart: fileConfig.showAtSessionStart ?? true,
         };
@@ -33,12 +64,7 @@ function loadConfig() {
     }
   }
   
-  return {
-    workspaceId: process.env.OPENCODE_GO_WORKSPACE_ID,
-    authCookie: process.env.OPENCODE_GO_AUTH_COOKIE,
-    refreshIntervalMinutes: 5,
-    showAtSessionStart: true,
-  };
+  return {};
 }
 
 function validateConfig(config) {
@@ -75,7 +101,20 @@ class UsageCache {
 }
 
 async function fetchUsage(workspaceId, authCookie) {
-  const url = `https://opencode.ai/workspace/${workspaceId}/billing`;
+  // Security: Basic input validation
+  if (!workspaceId || typeof workspaceId !== 'string') {
+    throw new Error('Invalid workspace ID');
+  }
+  if (!authCookie || typeof authCookie !== 'string') {
+    throw new Error('Invalid auth cookie');
+  }
+  
+  // Security: Sanitize workspaceId (alphanumeric, underscores, hyphens only)
+  if (!/^wrk_[a-zA-Z0-9]+$/.test(workspaceId)) {
+    throw new Error('Invalid workspace ID format');
+  }
+  
+  const url = `https://opencode.ai/workspace/${encodeURIComponent(workspaceId)}/billing`;
   
   const response = await fetch(url, {
     headers: {
@@ -89,7 +128,8 @@ async function fetchUsage(workspaceId, authCookie) {
     if (response.status === 401 || response.status === 403) {
       throw new Error('Authentication failed. Please check your auth cookie.');
     }
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    // Security: Don't leak response details that might contain sensitive info
+    throw new Error(`HTTP ${response.status}: Request failed`);
   }
 
   const html = await response.text();

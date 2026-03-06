@@ -32,6 +32,21 @@ Copy `index.js` to `~/.config/opencode/plugins/opencode-go-usage.js`
 
 ## Configuration
 
+### Option 1: Environment Variables (Recommended)
+
+**Most secure option** - credentials not stored on disk:
+
+```bash
+export OPENCODE_GO_WORKSPACE_ID="wrk_YOUR_WORKSPACE_ID"
+export OPENCODE_GO_AUTH_COOKIE="Fe26.2**YOUR_AUTH_COOKIE"
+export OPENCODE_GO_REFRESH_MINUTES=5
+export OPENCODE_GO_SHOW_AT_START=true
+```
+
+Add to your `~/.bashrc`, `~/.zshrc`, or use a tool like [direnv](https://direnv.net/).
+
+### Option 2: Config File
+
 Create `~/.config/opencode/opencode-go-usage.json`:
 
 ```json
@@ -43,6 +58,13 @@ Create `~/.config/opencode/opencode-go-usage.json`:
 }
 ```
 
+**Security:** Set restrictive permissions:
+```bash
+chmod 600 ~/.config/opencode/opencode-go-usage.json
+```
+
+⚠️ **Warning:** Config files can be accidentally committed to git. Use environment variables for better security.
+
 ### Getting Your Credentials
 
 1. **Workspace ID**: From your billing URL: `https://opencode.ai/workspace/{WORKSPACE_ID}/billing`
@@ -52,15 +74,6 @@ Create `~/.config/opencode/opencode-go-usage.json`:
    - Go to Application/Storage → Cookies
    - Find the `auth` cookie
    - Copy the value (starts with `Fe26.2**`)
-
-### Environment Variables
-
-You can also use environment variables:
-
-```bash
-export OPENCODE_GO_WORKSPACE_ID="wrk_..."
-export OPENCODE_GO_AUTH_COOKIE="Fe26.2**..."
-```
 
 ## Usage
 
@@ -124,6 +137,36 @@ Colors indicate status:
 ### Usage not showing at session start
 - Check that `showAtSessionStart` is `true`
 - Verify config file is at the correct path
+
+## Security
+
+### Credential Storage
+
+This plugin requires your OpenCode auth cookie to fetch usage data. Two storage options:
+
+1. **Environment Variables (Recommended)**
+   - Credentials exist only in memory
+   - Not written to disk
+   - Won't be accidentally committed to git
+
+2. **Config File**
+   - Convenient but stored as plaintext
+   - Risk of accidental git commits
+   - Set file permissions to `600` (owner read/write only)
+
+### Best Practices
+
+- **Use environment variables** for production/studio environments
+- **Rotate your auth cookie** periodically (get a fresh one from browser)
+- **Never commit** config files containing credentials to git
+- **Check file permissions** if using config file mode
+
+### What the plugin does NOT do:
+
+- ✅ Does not send credentials to any third-party servers
+- ✅ Only fetches data from `opencode.ai` domain
+- ✅ Does not log or expose your auth cookie
+- ✅ HTTPS only for all requests
 
 ## License
 
