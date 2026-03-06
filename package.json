@@ -2,7 +2,7 @@
   "name": "opencode-go-usage",
   "version": "1.0.0",
   "description": "OpenCode plugin to display OpenCode Go subscription quota and usage",
-  "main": "dist/index.js",
+  "main": "index.js",
   "type": "module",
   "keywords": [
     "opencode",
@@ -19,14 +19,10 @@
     "url": "https://github.com/ridho9/opencode-go-usage.git"
   },
   "files": [
-    "dist/",
+    "index.js",
     "README.md",
     "LICENSE"
   ],
-  "scripts": {
-    "build": "node build.js",
-    "prepublishOnly": "npm run build"
-  },
   "engines": {
     "node": ">=18"
   }

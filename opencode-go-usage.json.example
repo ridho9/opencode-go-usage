@@ -1,6 +1,0 @@
-{
-  "workspaceId": "wrk_YOUR_WORKSPACE_ID",
-  "authCookie": "Fe26.2**YOUR_AUTH_COOKIE_HERE",
-  "refreshIntervalMinutes": 5,
-  "showAtSessionStart": true
-}

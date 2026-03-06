@@ -28,7 +28,7 @@ OpenCode will automatically install the plugin on next startup using Bun.
 
 ### Manual Installation
 
-Copy `dist/index.js` to `~/.config/opencode/plugins/opencode-go-usage.js`
+Copy `index.js` to `~/.config/opencode/plugins/opencode-go-usage.js`
 
 ## Configuration
 
