@@ -153,7 +153,9 @@ function formatUsage(usage) {
 }
 
 export const OpenCodeGoUsagePlugin = async ({ client }) => {
+  console.log('[OpenCode Go Usage] Plugin loading...');
   const config = loadConfig();
+  console.log('[OpenCode Go Usage] Config loaded:', { showAtSessionStart: config.showAtSessionStart });
   const configErrors = validateConfig(config);
   
   if (configErrors.length > 0) {
@@ -198,16 +200,25 @@ export const OpenCodeGoUsagePlugin = async ({ client }) => {
     },
 
     'session.created': async () => {
+      console.log('[OpenCode Go Usage] session.created fired, showAtSessionStart:', config.showAtSessionStart);
       if (config.showAtSessionStart) {
         try {
+          console.log('[OpenCode Go Usage] Fetching usage...');
           const result = await getUsage();
+          console.log('[OpenCode Go Usage] Got usage:', result.data);
           await client.tui.showToast({
             body: { message: formatUsage(result.data), variant: 'info' },
           });
+          console.log('[OpenCode Go Usage] Toast shown');
         } catch (err) {
-          console.error('Failed to show usage:', err.message);
+          console.error('[OpenCode Go Usage] Failed to show usage:', err.message);
         }
       }
+    },
+
+    // Debug: log all events
+    'event': async ({ event }) => {
+      console.log('[OpenCode Go Usage] Event:', event.type);
     },
   };
 };
