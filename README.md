@@ -14,11 +14,7 @@ Display your OpenCode Go subscription quota and usage directly in OpenCode.
 
 ### Via npm (Recommended)
 
-```bash
-npm install -g opencode-go-usage
-```
-
-Then add to your `~/.config/opencode/opencode.json`:
+Add to your `~/.config/opencode/opencode.json`:
 
 ```json
 {
@@ -27,6 +23,8 @@ Then add to your `~/.config/opencode/opencode.json`:
   ]
 }
 ```
+
+OpenCode will automatically install the plugin on next startup using Bun.
 
 ### Manual Installation
 
