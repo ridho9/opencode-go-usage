@@ -1,6 +1,6 @@
 {
   "name": "opencode-go-usage",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "OpenCode plugin to display OpenCode Go subscription quota and usage",
   "main": "index.js",
   "type": "module",
