@@ -16,7 +16,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ridho9/opencode-go-usage.git"
+    "url": "git+https://github.com/ridho9/opencode-go-usage.git"
   },
   "files": [
     "index.js",
