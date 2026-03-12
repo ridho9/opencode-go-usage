@@ -114,7 +114,7 @@ async function fetchUsage(workspaceId, authCookie) {
     throw new Error('Invalid workspace ID format');
   }
   
-  const url = `https://opencode.ai/workspace/${encodeURIComponent(workspaceId)}/billing`;
+  const url = `https://opencode.ai/workspace/${encodeURIComponent(workspaceId)}/go`;
   
   const response = await fetch(url, {
     headers: {

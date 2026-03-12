@@ -67,7 +67,7 @@ chmod 600 ~/.config/opencode/opencode-go-usage.json
 
 ### Getting Your Credentials
 
-1. **Workspace ID**: From your billing URL: `https://opencode.ai/workspace/{WORKSPACE_ID}/billing`
+1. **Workspace ID**: From your workspace URL: `https://opencode.ai/workspace/{WORKSPACE_ID}/go`
 
 2. **Auth Cookie**: 
    - Open browser dev tools (F12)
@@ -114,6 +114,10 @@ Colors indicate status:
 - 🟢 Green: < 50% usage
 - 🟡 Yellow: 50-80% usage
 - 🔴 Red: > 80% usage
+
+### Screenshot
+
+![OpenCode Go Usage Tool](2026-03-06%2013-52-45.png)
 
 ## Configuration Options
 
